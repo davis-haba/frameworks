@@ -105,6 +105,7 @@ func Handlers(handlers ...handler.TargetHandler) Arg {
 		if d.handlers == nil {
 			d.handlers = make(map[string]handler.TargetHandler)
 		}
+
 		for _, h := range handlers {
 			d.handlers[h.GetName()] = h
 		}
