@@ -5,6 +5,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	// TODO davis-haba remove named import once willbeason's client test changes are merged in
+	// currently test_handler.go defines the type `handler`
+	targethandler "github.com/open-policy-agent/frameworks/constraint/pkg/handler"
 	"path"
 	"sort"
 	"strings"
@@ -57,7 +60,7 @@ func createDataPath(target, subpath string) string {
 // partial results can be analyzed.
 func (c *Client) AddData(ctx context.Context, data interface{}) (*types.Responses, error) {
 	resp := types.NewResponses()
-	errMap := make(ErrorMap)
+	errMap := make(targethandler.ErrorMap)
 	for target, h := range c.targets {
 		handled, relPath, processedData, err := h.ProcessData(data)
 		if err != nil {
@@ -84,7 +87,7 @@ func (c *Client) AddData(ctx context.Context, data interface{}) (*types.Response
 // partial results can be analyzed.
 func (c *Client) RemoveData(ctx context.Context, data interface{}) (*types.Responses, error) {
 	resp := types.NewResponses()
-	errMap := make(ErrorMap)
+	errMap := make(targethandler.ErrorMap)
 	for target, h := range c.targets {
 		handled, relPath, _, err := h.ProcessData(data)
 		if err != nil {
@@ -466,7 +469,7 @@ func (c *Client) AddConstraint(ctx context.Context, constraint *unstructured.Uns
 	defer c.mtx.Unlock()
 
 	resp := types.NewResponses()
-	errMap := make(ErrorMap)
+	errMap := make(targethandler.ErrorMap)
 	entry, err := c.getTemplateEntry(constraint, false)
 	if err != nil {
 		return resp, err
@@ -523,7 +526,7 @@ func (c *Client) RemoveConstraint(ctx context.Context, constraint *unstructured.
 
 func (c *Client) removeConstraintNoLock(ctx context.Context, constraint *unstructured.Unstructured) (*types.Responses, error) {
 	resp := types.NewResponses()
-	errMap := make(ErrorMap)
+	errMap := make(targethandler.ErrorMap)
 	entry, err := c.getTemplateEntry(constraint, false)
 	if err != nil {
 		return resp, err
@@ -691,7 +694,7 @@ func (c *Client) Review(ctx context.Context, obj interface{}, opts ...QueryOpt) 
 		opt(cfg)
 	}
 	responses := types.NewResponses()
-	errMap := make(ErrorMap)
+	errMap := make(targethandler.ErrorMap)
 TargetLoop:
 	for name, target := range c.targets {
 		handled, review, err := target.HandleReview(obj)
@@ -733,7 +736,7 @@ func (c *Client) Audit(ctx context.Context, opts ...QueryOpt) (*types.Responses,
 		opt(cfg)
 	}
 	responses := types.NewResponses()
-	errMap := make(ErrorMap)
+	errMap := make(targethandler.ErrorMap)
 TargetLoop:
 	for name, target := range c.targets {
 		// Short-circuiting question applies here as well

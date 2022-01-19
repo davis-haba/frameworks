@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"errors"
+	handler2 "github.com/open-policy-agent/frameworks/constraint/pkg/handler"
 	"strings"
 	"testing"
 	"text/template"
@@ -190,7 +191,7 @@ func TestAddData(t *testing.T) {
 			}
 
 			gotErrs := make(map[string]bool)
-			if e, ok := err.(*ErrorMap); ok {
+			if e, ok := err.(*handler2.ErrorMap); ok {
 				for k := range *e {
 					gotErrs[k] = true
 				}
@@ -276,7 +277,7 @@ func TestRemoveData(t *testing.T) {
 			}
 
 			gotErrs := make(map[string]bool)
-			if e, ok := err.(*ErrorMap); ok {
+			if e, ok := err.(*handler2.ErrorMap); ok {
 				for k := range *e {
 					gotErrs[k] = true
 				}
