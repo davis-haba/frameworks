@@ -1,10 +1,6 @@
 package local
 
 import (
-<<<<<<< HEAD
-=======
-	"github.com/open-policy-agent/frameworks/constraint/pkg/handler"
->>>>>>> d64c132 (Give driver a  map of handler names to client.TargetHandler)
 	"github.com/open-policy-agent/frameworks/constraint/pkg/externaldata"
 	"github.com/open-policy-agent/frameworks/constraint/pkg/handler"
 	"github.com/open-policy-agent/opa/ast"
@@ -104,25 +100,12 @@ func DisableBuiltins(builtins ...string) Arg {
 	}
 }
 
-<<<<<<< HEAD
 func Handlers(handlers ...handler.TargetHandler) Arg {
 	return func(d *Driver) {
 		if d.handlers == nil {
 			d.handlers = make(map[string]handler.TargetHandler)
 		}
-
-=======
-<<<<<<< HEAD
-func Handlers(handlers ...client.TargetHandler) Arg {
-	return func(d *Driver) {
-=======
-func Handlers(handlers ...handler.TargetHandler) Arg {
-	return func(d *Driver) {
-		if d.handlers == nil {
-			d.handlers = make(map[string]handler.TargetHandler)
-		}
->>>>>>> 920b73b (Give driver a  map of handler names to client.TargetHandler)
->>>>>>> d64c132 (Give driver a  map of handler names to client.TargetHandler)
+		
 		for _, h := range handlers {
 			d.handlers[h.GetName()] = h
 		}
