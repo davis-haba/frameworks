@@ -13,6 +13,10 @@ import (
 	"sync"
 	"time"
 
+<<<<<<< HEAD
+=======
+	"github.com/open-policy-agent/frameworks/constraint/pkg/handler"
+>>>>>>> d64c132 (Give driver a  map of handler names to client.TargetHandler)
 	"github.com/open-policy-agent/frameworks/constraint/pkg/core/templates"
 	"github.com/open-policy-agent/frameworks/constraint/pkg/handler"
 	"github.com/open-policy-agent/frameworks/constraint/pkg/regorewriter"
