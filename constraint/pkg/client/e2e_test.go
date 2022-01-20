@@ -109,12 +109,13 @@ var denyAllCases = []struct {
 }}
 
 func newTestClient() (*Client, error) {
-	d := local.New()
+	h := &handler{}
+	d := local.New(local.Handlers(h))
 	b, err := NewBackend(Driver(d))
 	if err != nil {
 		return nil, err
 	}
-	return b.NewClient(Targets(&handler{}))
+	return b.NewClient(Targets(h))
 }
 
 func TestE2EAddTemplate(t *testing.T) {
@@ -176,6 +177,7 @@ func TestE2EAudit(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := context.Background()
 
+			// TODO davis-haba need to setup the client's driver with the proper handlers?
 			c, err := newTestClient()
 			if err != nil {
 				t.Fatal(err)
