@@ -260,7 +260,7 @@ func TestRemoveData(t *testing.T) {
 
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
-			d := local.New()
+			d := local.New(local.Handlers(tc.handler1, tc.handler2))
 
 			b, err := NewBackend(Driver(d))
 			if err != nil {
