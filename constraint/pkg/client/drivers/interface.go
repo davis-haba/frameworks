@@ -31,4 +31,6 @@ type Driver interface {
 	DeleteData(ctx context.Context, path string) (bool, error)
 	Query(ctx context.Context, path string, input interface{}, opts ...QueryOpt) (*types.Response, error)
 	Dump(ctx context.Context) (string, error)
+	AddCachedData(ctx context.Context, obj interface{}) (*types.Responses, error)
+	RemoveCachedData(ctx context.Context, obj interface{}) (*types.Responses, error)
 }

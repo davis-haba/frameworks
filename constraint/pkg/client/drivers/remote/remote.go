@@ -253,3 +253,11 @@ func (d *driver) Dump(_ context.Context) (string, error) {
 	}
 	return string(b), nil
 }
+
+func (d *driver) AddCachedData(ctx context.Context, obj interface{}) (*ctypes.Responses, error) {
+	panic("not implemented")
+}
+
+func (d *driver) RemoveCachedData(ctx context.Context, obj interface{}) (*ctypes.Responses, error) {
+	panic("not implemented")
+}

@@ -46,67 +46,60 @@ type Client struct {
 	allowedDataFields []string
 }
 
-// createDataPath compiles the data destination: data.external.<target>.<path>.
-func createDataPath(target, subpath string) string {
-	subpaths := strings.Split(subpath, "/")
-	p := []string{"external", target}
-	p = append(p, subpaths...)
-
-	return "/" + path.Join(p...)
-}
-
 // AddData inserts the provided data into OPA for every target that can handle the data.
 // On error, the responses return value will still be populated so that
 // partial results can be analyzed.
 func (c *Client) AddData(ctx context.Context, data interface{}) (*types.Responses, error) {
-	resp := types.NewResponses()
-	errMap := make(targethandler.ErrorMap)
-	for target, h := range c.targets {
-		handled, relPath, processedData, err := h.ProcessData(data)
-		if err != nil {
-			errMap[target] = err
-			continue
-		}
-		if !handled {
-			continue
-		}
-		if err := c.backend.driver.PutData(ctx, createDataPath(target, relPath), processedData); err != nil {
-			errMap[target] = err
-			continue
-		}
-		resp.Handled[target] = true
-	}
-	if len(errMap) == 0 {
-		return resp, nil
-	}
-	return resp, &errMap
+	//resp := types.NewResponses()
+	//errMap := make(targethandler.ErrorMap)
+	//for target, h := range c.targets {
+	//	handled, relPath, processedData, err := h.ProcessData(data)
+	//	if err != nil {
+	//		errMap[target] = err
+	//		continue
+	//	}
+	//	if !handled {
+	//		continue
+	//	}
+	//	if err := c.backend.driver.PutData(ctx, createDataPath(target, relPath), processedData); err != nil {
+	//		errMap[target] = err
+	//		continue
+	//	}
+	//	resp.Handled[target] = true
+	//}
+	//if len(errMap) == 0 {
+	//	return resp, nil
+	//}
+	//return resp, &errMap
+	return c.backend.driver.AddCachedData(ctx, data)
 }
 
 // RemoveData removes data from OPA for every target that can handle the data.
 // On error, the responses return value will still be populated so that
 // partial results can be analyzed.
 func (c *Client) RemoveData(ctx context.Context, data interface{}) (*types.Responses, error) {
-	resp := types.NewResponses()
-	errMap := make(targethandler.ErrorMap)
-	for target, h := range c.targets {
-		handled, relPath, _, err := h.ProcessData(data)
-		if err != nil {
-			errMap[target] = err
-			continue
-		}
-		if !handled {
-			continue
-		}
-		if _, err := c.backend.driver.DeleteData(ctx, createDataPath(target, relPath)); err != nil {
-			errMap[target] = err
-			continue
-		}
-		resp.Handled[target] = true
-	}
-	if len(errMap) == 0 {
-		return resp, nil
-	}
-	return resp, &errMap
+	//resp := types.NewResponses()
+	//errMap := make(targethandler.ErrorMap)
+	//for target, h := range c.targets {
+	//	handled, relPath, _, err := h.ProcessData(data)
+	//	if err != nil {
+	//		errMap[target] = err
+	//		continue
+	//	}
+	//	if !handled {
+	//		continue
+	//	}
+	//	if _, err := c.backend.driver.DeleteData(ctx, createDataPath(target, relPath)); err != nil {
+	//		errMap[target] = err
+	//		continue
+	//	}
+	//	resp.Handled[target] = true
+	//}
+	//if len(errMap) == 0 {
+	//	return resp, nil
+	//}
+	//return resp, &errMap
+	return c.backend.driver.RemoveCachedData(ctx, data)
 }
 
 // createTemplatePath returns the package path for a given template: templates.<target>.<name>.

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"path"
 	"sort"
 	"strings"
 	"sync"
@@ -696,4 +697,61 @@ func validateTargets(templ *templates.ConstraintTemplate) error {
 
 func (d *Driver) SetExterns(fields []string) {
 	d.externs = fields
+}
+
+func (d *Driver) AddCachedData(ctx context.Context, obj interface{}) (*types.Responses, error) {
+	resp := types.NewResponses()
+	errMap := make(handler.ErrorMap)
+	for target, h := range d.handlers {
+		handled, relPath, processedData, err := h.ProcessData(obj)
+		if err != nil {
+			errMap[target] = err
+			continue
+		}
+		if !handled {
+			continue
+		}
+		if err := d.PutData(ctx, createDataPath(target, relPath), processedData); err != nil {
+			errMap[target] = err
+			continue
+		}
+		resp.Handled[target] = true
+	}
+	if len(errMap) == 0 {
+		return resp, nil
+	}
+	return resp, &errMap
+}
+
+func (d *Driver) RemoveCachedData(ctx context.Context, obj interface{}) (*types.Responses, error) {
+	resp := types.NewResponses()
+	errMap := make(handler.ErrorMap)
+	for target, h := range d.handlers {
+		handled, relPath, _, err := h.ProcessData(obj)
+		if err != nil {
+			errMap[target] = err
+			continue
+		}
+		if !handled {
+			continue
+		}
+		if _, err := d.DeleteData(ctx, createDataPath(target, relPath)); err != nil {
+			errMap[target] = err
+			continue
+		}
+		resp.Handled[target] = true
+	}
+	if len(errMap) == 0 {
+		return resp, nil
+	}
+	return resp, &errMap
+}
+
+// createDataPath compiles the data destination: data.external.<target>.<path>.
+func createDataPath(target, subpath string) string {
+	subpaths := strings.Split(subpath, "/")
+	p := []string{"external", target}
+	p = append(p, subpaths...)
+
+	return "/" + path.Join(p...)
 }

@@ -173,8 +173,9 @@ func TestAddData(t *testing.T) {
 
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
-			d := local.New()
+			d := local.New(local.Handlers(tc.handler1, tc.handler2))
 
+			// TODO davis-haba need to feed handlers into driver here
 			b, err := NewBackend(Driver(d))
 			if err != nil {
 				t.Fatalf("Could not create backend: %s", err)
