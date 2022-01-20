@@ -29,6 +29,10 @@ func Defaults() Arg {
 		if d.capabilities == nil {
 			d.capabilities = ast.CapabilitiesForThisVersion()
 		}
+		
+		if d.handlers == nil {
+			d.handlers = make(map[string]handler.TargetHandler)
+		}
 
 		// adding external_data builtin otherwise capabilities get overridden
 		// if a capability, like http.send, is disabled
